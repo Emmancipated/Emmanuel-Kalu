@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/Emmanuel-Kalu/static/css/main.b099d34e.css",
+    "main.js": "/Emmanuel-Kalu/static/js/main.ce73362b.js",
+    "index.html": "/Emmanuel-Kalu/index.html",
+    "main.b099d34e.css.map": "/Emmanuel-Kalu/static/css/main.b099d34e.css.map",
+    "main.ce73362b.js.map": "/Emmanuel-Kalu/static/js/main.ce73362b.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.b099d34e.css",
+    "static/js/main.ce73362b.js"
+  ]
+}
