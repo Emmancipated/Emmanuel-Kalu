@@ -14,8 +14,8 @@ import {
 const initialState = {
     products: {
         items: [],
-        currentCategory: 'all',
-        currency: ["$","USD"],
+        currentCategory: "",
+        currency: [],
         // totalCount: null
     }
 }

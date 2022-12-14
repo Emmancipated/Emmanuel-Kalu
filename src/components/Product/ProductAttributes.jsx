@@ -21,7 +21,7 @@ class ProductAttributes extends React.Component {
                 {attribute.items.map((attributeItem)=> 
                     <div className="color-box" key={attributeItem.value}>            
                     <input className="color-input"  name={attribute.id} onChange={this.props.selectAttributes} type="radio" value={attributeItem.value} />
-                    <span className="color-text"  style={{backgroundColor: attributeItem.value}}></span>
+                    <span className="color-text"  style={{backgroundColor: attributeItem.value, boxShadow: attributeItem.value === '#FFFFFF'? '0 0 20px #ccc': null} }></span>
                     </div>
                 )}
                 </div></div>)

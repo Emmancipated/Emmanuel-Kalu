@@ -10,16 +10,19 @@ class CurrencySwitcher extends React.Component {
         this.props.SelectCurrency([e.target.id, e.target.className]);
     }
     render() {
-        console.log(this.props);
         return <Query query={getCurrencies}>
             {({loading, error, data})=> {
                 if(loading) return <p>loading...</p>
                 if(error) return <p>{error.message}</p>
                 if(data === undefined) return <p></p>
                 const {currencies} = data;
-                return <div className="currency-container">
-                    {data && currencies.map((currency)=>
-                        <h4 id={currency.symbol} className={currency.label} key={currency.label} onClick={this.setCurrency}>{currency.symbol} {currency.label}</h4>   
+                const {currency} = this.props;
+                return <div className="currency-container" onClick={this.props.CloseModal}>
+                    {data && currencies.map((currencyItem)=>
+                    currency.length < 1 ?
+                        <h4 id={currencyItem.symbol} className={currencyItem.label} key={currencyItem.label} onClick={this.setCurrency} style={{backgroundColor:currencyItem.symbol === '$' ? '#EEEEEE':null}}>{currencyItem.symbol} {currencyItem.label}</h4>
+                        :
+                        <h4 id={currencyItem.symbol} className={currencyItem.label} key={currencyItem.label} onClick={this.setCurrency} style={{backgroundColor:currencyItem.symbol === currency[0]? '#EEEEEE':null}} >{currencyItem.symbol} {currencyItem.label}</h4>
                     )}
                 </div>
             }}

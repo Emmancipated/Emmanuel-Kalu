@@ -65,10 +65,13 @@ imageSlideRight = (iden, len) => {
             {({fetching, error, data}) => {
               let amount;
               data && data.product.prices.map((price) => {   
-                if (price.currency.symbol === currency[0]) {
+                if (price.currency.symbol === '$') {
                   amount = price.amount
                   return price.amount;
-                }  
+                } else if (price.currency.symbol === currency[0]) {
+                  amount = price.amount
+                return price.amount;
+                } 
                 return price.amount;
                 });
 
@@ -81,7 +84,8 @@ imageSlideRight = (iden, len) => {
                     name={item.name}
                     stateID={item.id}
                     data={data}
-                    amount={Math.round(item.value * amount * 100)/100}
+                    currencySymbol={currency.length < 1 ? '$' : currency[0]}
+                    amount={(item.value * amount).toFixed(2)}
                     item={item}
                     increase={this.increment}
                     keystone={item.id}

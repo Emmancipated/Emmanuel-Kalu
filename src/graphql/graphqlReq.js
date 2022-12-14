@@ -66,6 +66,7 @@ export const getProduct = (product)=> {
           name
           inStock
           gallery
+          category
           attributes {
             id
             name
@@ -87,44 +88,11 @@ export const getProduct = (product)=> {
         }
       }
     }`}
-  
-  
-  
-  export const getAll = `
+   
+  export const getCategoryName = `
   query {
-    category (input: {title: "all"}){
-      name
-      products {
-        id
-        name
-        inStock
-        gallery
-        attributes {
-          id
-          name
-          type
-          items {
-            displayValue
-            value
-            id
-          }
-        }
-        prices {
-          currency {
-            label
-            symbol
-          }
-          amount
-        }
-        brand
-      }
-    }
-  }`;
-
-export const getCategoryName = `
-query {
     categories {
         name 
     }
-} 
-`;
+  } 
+  `;

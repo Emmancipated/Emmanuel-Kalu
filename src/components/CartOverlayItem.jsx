@@ -3,12 +3,11 @@ import { connect } from "react-redux";
 
 class CartOverlayItem extends React.Component {
     render() {
-        const {currency} = this.props;
             return  <div className="cartoverlay-items">       
                     <div>
                         <h3>{this.props.data.product.brand}</h3>
                         <h3>{this.props.data.product.name}</h3>
-                        <h3 className="price-tag">{currency[0]} {this.props.amount}</h3>
+                        <h3 className="price-tag">{this.props.currencySymbol} {this.props.amount}</h3>
 
                         {this.props.data.product.attributes.map((attribute, index)=> attribute.type === "text" ? (<section key={attribute.id}>
                         <label className="item-label">{attribute.name.toUpperCase()}:</label>
@@ -29,12 +28,11 @@ class CartOverlayItem extends React.Component {
                         {attribute.items.map((attributeItem)=> 
                         <div className="color-box" key={attributeItem.value}>  
                         <input className="cartoverlay-color-input" name={attribute.id} type="checkbox" value={attributeItem.value} checked={this.props.item.attributes[index][1]===attributeItem.value && true} onChange={()=>null}/>
-                        <span className="cartoverlay-color-text" style={{backgroundColor: attributeItem.value}}></span>
+                        <span className="cartoverlay-color-text" style={{backgroundColor: attributeItem.value, boxShadow: attributeItem.value === '#FFFFFF'? '0 0 20px #ccc': null}}></span>
                         </div>
                     )}</div></section>)
                     : 
                     null )} 
-
                     </div>
                     
                     <div className="cartitem-modifier">

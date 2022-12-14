@@ -15,8 +15,8 @@ class Header extends React.Component {
         this.state = {isClicked: false, dropDown: "hidden", counter: 0,};
     }
 
-   handleClick = () => {
-        this.setState({isClicked: true, dropDown: "open",})     
+    handleClick = () => {
+        this.setState({isClicked: true, dropDown: "open",})
     };
 
     handleCartoverlay = () => {
@@ -25,6 +25,9 @@ class Header extends React.Component {
 
     handleClose = () => {
         this.setState({isClicked: false, dropDown: "hide"})     
+    }
+    handleClosed = () => {
+        this.setState({isClicked: false, dropDown: "hidden"})     
     }
 
     setCategory = (e) => {
@@ -36,24 +39,29 @@ class Header extends React.Component {
         const {products, currency} = this.props;
         const productValues = products.map(({ value }) => value);
 
+
         let totalCount = 0;
         productValues.forEach(count => {
         totalCount += count;
         });
         let currencySelector;
+        let selectedCurrency;
 
       if(this.state.isClicked === false && dropDown === "hidden") {
         currencySelector = <  DownArrowSvg onClick={this.handleClick} />
+        selectedCurrency = currency.length < 1 ?<p onClick={this.handleClick}>$</p>:<p onClick={this.handleClick}>{currency[0]}</p>
       } else if (isClicked === true && dropDown === "open") {
-        currencySelector =  <>< UpArrowSvg /> <CurrencySwitcher/></>
         setTimeout(() => {
             window.addEventListener('click', this.handleClose);
         }, 0)
-        
+        currencySelector =  <>< UpArrowSvg /> <CurrencySwitcher CloseModal={this.handleClose}/></>
+        selectedCurrency = currency.length < 1 ?<><p>$</p><CurrencySwitcher/></>:<><p>{currency[0]}</p><CurrencySwitcher/></>   
       } 
       else {
         currencySelector = <  DownArrowSvg onClick={this.handleClick}/>
+        selectedCurrency = currency.length < 1 ?<p onClick={this.handleClick}>$</p>:<p onClick={this.handleClick}>{currency[0]}</p>
         window.removeEventListener('click', this.handleClose);
+        
       }
 
         return <Query query={getCategoryName}>
@@ -67,32 +75,37 @@ class Header extends React.Component {
                         {/* Navigation links */}
                         <nav>
                             <div className="nav-link">
-                            {/* {categories.map((category)=> <NavLink className={({isActive}) => (
-                            isActive ? "activeNav" : null)
-                            } to={`${category.name}`}
-                            onClick={()=> this.checkSome(category.name)}
+                            {categories.map((category)=> 
+                            this.props.currentCategory === '' ? 
+                            <NavLink 
+                            className={"other"} 
+                            to={`${category.name}`}
+                            onClick={()=> this.setCategory(category.name)}
                             key={category.name}
                             >
                             {category.name}
-                            </NavLink>)}                                 */}
-                            {categories.map((category)=> <NavLink 
+                            </NavLink>
+                            :
+                            <NavLink 
                             className={category.name === this.props.currentCategory ? "activeNav" : null} 
                             to={`${category.name}`}
                             onClick={()=> this.setCategory(category.name)}
                             key={category.name}
                             >
                             {category.name}
-                            </NavLink>)}
+                            </NavLink>
+                            )}
                             </div>
 
                             {/* Center Logo */}
                             <div id="logo">
-                            <img src={require("../img/a-logo.png")} alt="logo" />
+                            <img src={require("../img/a-logo.png")} alt="logo"/>
                             </div>
 
                             {/* <!-- Currency symbol--> */}
                             <div className="product-modifier">
-                                <p>{currency[0]}</p>
+                                {/* <p>{currency[0]}</p> */}
+                                <div className="selected-currency">{selectedCurrency}</div>                                
                                 <div>
                                     {/* Displays the current value of currency list */}
                                     {currencySelector}

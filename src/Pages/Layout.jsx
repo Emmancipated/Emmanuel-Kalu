@@ -4,7 +4,7 @@ import ProductCard from "../components/Product/ProductCard";
 import { connect } from "react-redux";
 import { AddProduct, TrackCategory } from "../redux/actions";
 import { nanoid } from "@reduxjs/toolkit";
-import { getAll, getCategory} from "../graphql/graphqlReq";
+import {getCategory} from "../graphql/graphqlReq";
 
 class Layout extends React.Component {
     constructor(props){
@@ -19,7 +19,6 @@ class Layout extends React.Component {
           imageSlide: 0,
           selectedImage: "",
           attributes: [],
-          showWarning: false,
           addedtoCart: false,
         };
         this.selectAttribute = this.selectAttribute.bind(this);
@@ -68,7 +67,7 @@ class Layout extends React.Component {
                
         return <>
 
-            <Query query={categoryName === undefined  ? getAll : getCategory(categoryName)}>
+            <Query query={categoryName === undefined  ? getCategory('all') : getCategory(categoryName)}>
               {({fetching, error, data}) => {
 
                 if (fetching) return <p>Loading...</p>;
@@ -78,22 +77,42 @@ class Layout extends React.Component {
                   {this.state.showWarning ? <p className="warning" >can't add to cart, open product to select attributes.</p> : null}
                   {this.state.addedtoCart ? <p className="addedtocart" >successfully added item to cart.</p> : null}
                   <h2 id="page-header" >{data && data.category.name.toUpperCase()}</h2>
+                  
                   <div className="main-page">
                   
                   {data.category.products.map((product)=>
+                    currency.length < 1 ?
                     < ProductCard 
-                      url={`/${categoryName}/${product.id}`}
+                      products={product}
+                      url={`/${product.category}/${product.id}`}
+                      photo={product.gallery[0]}
+                      name={product.name}
+                      brand={product.brand}
+                      currencySymbol={'$'}
+                      amount={product.prices.map((price) => price.currency.symbol === '$' ? price.amount.toFixed(2) : null)}
+                      key={product.id}
+                      inStock={!product.inStock === true ? "instock-false": ""}
+                      identity={product.id}
+                      // AddItemToCart={product.attributes.length > 0 ? this.selectAttribute : ()=> this.handleAddToCart(product.id)}
+                      AddItemToCart={product.attributes.length > 0 && product.inStock ? null: ()=> this.handleAddToCart(product.id)}
+                      productId={product.id}
+                    />
+                    :
+                    < ProductCard 
+                      products={product}
+                      url={`/${product.category}/${product.id}`}
                       photo={product.gallery[0]}
                       name={product.name}
                       brand={product.brand}
                       currencySymbol={currency[0]}
-                      amount={product.prices.map((price) => price.currency.symbol === currency[0] ? price.amount : null)}
+                      amount={product.prices.map((price) => price.currency.symbol === currency[0] ? price.amount.toFixed(2) : null)}
                       key={product.id}
                       inStock={!product.inStock === true ? "instock-false": ""}
                       identity={product.id}
-                      AddItemToCart={product.attributes.length > 0 ? this.selectAttribute: ()=> this.handleAddToCart(product.id)}
+                      // AddItemToCart={product.attributes.length > 0 ? this.selectAttribute : ()=> this.handleAddToCart(product.id)}
+                      AddItemToCart={product.attributes.length > 0 && product.inStock ? null : ()=> this.handleAddToCart(product.id)}
                       productId={product.id}
-                    />                    
+                    />                  
                   )}    
                               
                   </div>      

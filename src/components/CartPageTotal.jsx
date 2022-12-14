@@ -11,8 +11,12 @@ class CartPageTotal extends React.Component {
 
       cartProducts.map((product)=> {
         items && items.map((item)=> {
-            let amount = item.prices.filter((price) => price.currency.symbol === currency[0]? price.amount: null) 
-            if(product.name === item.id) {
+          let amount;
+          currency.length < 1 ?
+          amount = item.prices.filter((price) => price.currency.symbol === '$'? price.amount: null)
+          :
+          amount = item.prices.filter((price) => price.currency.symbol === currency[0]? price.amount: null)         
+          if(product.name === item.id) {
                 product.amount = amount[0].amount; //item.prices[0].amount
                 let productPrice = product.amount * product.value;
                 product.price = Math.round(productPrice * 100) / 100;
@@ -51,9 +55,9 @@ class CartPageTotal extends React.Component {
 
             return (
                 <div className="checkout-container">
-                <p>Tax 21%: <strong>{currency[0]}{Math.round(this.totalPrice(items) * 21) / 100}</strong> </p>
+                <p>Tax 21%: <strong>{currency.length < 1 ? '$' : currency[0]}{((this.totalPrice(items) * 21) / 100).toFixed(2)}</strong> </p>
                 <p>Quantity: <strong>{totalCount}</strong></p>
-                <h3>Total: <span>{currency[0]}{Math.round(this.totalPrice(items) * 100) / 100}</span></h3>
+                <h3>Total: <span>{currency.length < 1 ? '$' : currency[0]}{this.totalPrice(items).toFixed(2)}</span></h3>
                 <div ><button type="submit" className="add-to-cart">ORDER</button></div>
                </div>
             );            

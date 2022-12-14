@@ -1,6 +1,7 @@
 import React from "react";
 import { Query } from "urql";
 import { connect } from "react-redux";
+import parse from 'html-react-parser';
 import ProductSideImages from "../components/Product/ProductSideImages";
 import ProductMainImage from "../components/Product/ProductMainImage";
 import { AddProduct } from "../redux/actions";
@@ -37,7 +38,7 @@ class ProductPage extends React.Component {
         const {products} = this.props;
         let copiedLocalState = {...this.state};// copied local state
         let deepStateCopy = JSON.parse(JSON.stringify(products));//copied the state of the app
-        let items = deepStateCopy.filter(product => product.name === copiedLocalState.name);//filter copied state where name matches the copied state name
+        let items = deepStateCopy.filter(product => product.name === copiedLocalState.name);//filter copied app state where name matches the copied local state name
         let compare;
         let result;
         let filteredResult;
@@ -55,6 +56,7 @@ class ProductPage extends React.Component {
         filteredResult = items.filter(product => !product.extra.includes(false))// exclude results that contains false
         }
         if(filteredResult && filteredResult.length < 1) {//when there was no such item, dispatch the local state
+        this.setState({id: nanoid(),}) 
         this.props.AddProduct(this.state)
         } else {
         this.props.AddProduct(filteredResult[0].id) //else dispatch the id of the identified item in state, 
@@ -91,9 +93,8 @@ class ProductPage extends React.Component {
        const {selectedImage, showMore} = this.state;
        const { params, currency } = this.props;
        const {productID} = params;
-
         return <>
-        <Query query={getProduct(productID)} >
+            <Query query={getProduct(productID)} >
             {({fetching, error, data}) => {
                 if (fetching) return <p>Loading..</p>
                 if (error) return <p>Error</p>
@@ -121,8 +122,12 @@ class ProductPage extends React.Component {
                             />
                         
                             <label className="item-label">PRICE:</label>
-                            <h3 className="price-tag">{currency[0]} {data.product.prices.map((price) => price.currency.symbol === currency[0] ? price.amount : null)}</h3>
-
+                            {
+                               currency.length < 1 ? 
+                               <h3 className="price-tag">{'$'} {data.product.prices.map((price) => price.currency.symbol === '$' ? price.amount.toFixed(2) : null)}</h3>
+                               :
+                               <h3 className="price-tag">{currency[0]} {data.product.prices.map((price) => price.currency.symbol === currency[0] ? price.amount.toFixed(2) : null)}</h3>
+                            }
                             <div>
                             {product.inStock && this.state.attributes.length === product.attributes.length ?
                               
@@ -137,10 +142,9 @@ class ProductPage extends React.Component {
                             </div>
                         
                             {!showMore && product.description.length > 350 
-                            ? 
-                            <div dangerouslySetInnerHTML={{__html: data.product.description.slice(0, 350) + '...'}}/>  
+                            ? <div>{parse(data.product.description.slice(0, 350)+ '...')}</div>
                             : 
-                            <div dangerouslySetInnerHTML={{__html: data.product.description }}/>
+                            <div>{parse(data.product.description)}</div>
                             }
 
                             {product.description.length > 300 && (
